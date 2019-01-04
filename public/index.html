@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Websockets 101</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>
+</head>
+
+<body>
+    <h1>IMU Data</h1>
+    <div id='imu_data'></div>
+    <h1>Linear Potentiometer Data</h1>
+    <div id='linearPots_data'></div>
+    <h1>Ride Height Data</h1>
+    <div id='ride_data'></div>
+    <h1>Rotary Potentiometer Data</h1>
+    <div id='rot_data'></div>
+    <img id="camera_data">
+
+    <script>
+        var socket = io.connect('http://localhost:3000');
+        var imu_data = document.getElementById('imu_data');
+        var linearPots_data = document.getElementById('linearPots_data');
+        var ride_data = document.getElementById('ride_data');
+        var rot_data = document.getElementById('rot_data');
+        var camera_data = document.getElementById('camera_data');
+
+        socket.on('imu_front', function (data) {
+            var imu_obj = JSON.parse(data);
+            imu_data.innerHTML = '<p> Roll : ' + imu_obj.roll + ' Pitch : ' + imu_obj.pitch + ' Yaw : ' +
+                imu_obj.yaw + ' AccelX : ' + imu_obj.accelX + ' AccelY : ' + imu_obj.accelY + ' AccelZ : ' +
+                imu_obj.accelZ + '</p>';
+        });
+
+        socket.on('linearPots_front', function (data) {
+            var linearPots_obj = JSON.parse(data);
+            linearPots_data.innerHTML = '<p> Front Left : ' + linearPots_obj.fLeft + ' Front Right : ' +
+                linearPots_obj.fRight + ' Rear Left : ' +
+                linearPots_obj.rLeft + ' Rear Right : ' + linearPots_obj.rRight + '</p>';
+        });
+
+        socket.on('ride_rot_front', function (data) {
+            var ride_rot_obj = JSON.parse(data);
+            ride_data.innerHTML = '<p> Front Left : ' + ride_rot_obj.rideOne + ' Front Right : ' + ride_rot_obj
+                .rideTwo + ' Middle Left : ' +
+                ride_rot_obj.rideThree + ' Middle Right : ' + ride_rot_obj.rideFour + ' Rear Left : ' +
+                ride_rot_obj.rideFive + ' Rear Right : ' + ride_rot_obj.rideSix + '</p>';
+            
+            rot_data.innerHTML = '<p> Angle : ' + ride_rot_obj.rotary + '</p>';
+        });
+
+        socket.on('camera_front', function(data){
+            camera_data.src = `data:image/jpeg;base64,${data}`;
+        });
+    </script>
+</body>
+
+</html>
