@@ -1,37 +1,28 @@
 var express = require('express');
 var socket = require('socket.io');
 
-//App setup
-
+// App setup
 var app = express();
-var server = app.listen(3000,function(){
-    console.log("Listening to requests on port 3000");
+var server = app.listen(1234, function(){
+    console.log('listening for requests on port 1234');
 });
 
-//static files
-
+// Static files
 app.use(express.static('public'));
 
-//socket setup
-
+// Socket setup & pass server
 var io = socket(server);
+io.on('connection', (socket) => {
 
-io.on('connection', function(socket){
-    console.log('made socket connection',socket.id);
+    console.log('made socket connection', socket.id);
 
-    socket.on('imu',function(data){
-        //console.log("IMU Data Recieved");
-        io.sockets.emit('imu_front', data);
+    socket.on('source', function(data){
+        console.log("data recieved from python and sent to react");
+        console.log(data.source)
+        io.sockets.emit('mobile');
     });
 
-    socket.on('linearPots',function(data){
-        //console.log("Linear Pots Data Recieved");
-        io.sockets.emit('linearPots_front', data);
+    socket.on('mobile', function(){
+        console.log("data recieved on mobile");
     });
-
-    socket.on('camera',function(data){
-        //console.log(data);
-        io.sockets.emit('camera_front', data);
-    });  
-
 });
