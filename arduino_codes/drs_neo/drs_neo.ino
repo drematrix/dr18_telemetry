@@ -1,4 +1,4 @@
-// Code for Arduino 3
+// Components: NeoPixel , DRS Actuation Button
 
 #include <Servo.h>
 #include <Adafruit_NeoPixel.h>
