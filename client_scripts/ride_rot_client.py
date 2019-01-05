@@ -2,11 +2,31 @@ import serial
 import struct
 import json
 import socketio
+import csv
 #import time
 
 # WARNING - INITIALIZE PROPERLY
 sio = socketio.Client()
 ard1 = serial.Serial('COM10', 9600)
+fetchData = []
+lap = 1
+filName = 'ride_rot.csv'
+
+def writeData(arr=[],*args):
+    with open(fileName,'a+') as f:
+        output = csv.writer(f,dialect='excel')
+        output.writerows([arr])
+    f.close()
+
+#Lap change socket
+@sio.on('lap_change')
+def lap_change():
+    print("Lap Change")
+    lap = lap + 1
+    y = "Lap" + str(lap)
+    writeData(y)
+    writeData(fetchData)
+
 
 # let it initialize
 #time.sleep(2)
@@ -16,6 +36,9 @@ def fetchData():
     data = str(data)
     data = data[2:-1]
     x = list(map(str, data.split(" ")))
+
+    fetchData = x
+    writeData(x)
 
     ride_rot = {
         "rideOne" : x[0],
@@ -34,4 +57,5 @@ def fetchData():
 if __name__ == "__main__":
     sio.connect('http://localhost:3000')
     while True:
+        #global fetchData
         sio.emit('ride_rot', fetchData())

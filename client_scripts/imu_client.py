@@ -9,15 +9,13 @@ sio = socketio.Client()
 def on_connect():
     print('connection established')
 
-@sio.on('my message')
-def on_message(data):
-    print('message received with ', data)
-    sio.emit('hello', 'New Python Client')
-
-@sio.on('disconnect')
-def on_disconnect():
-    print('disconnected from server')
-
+@sio.on('lap_change')
+def lap_change():
+    print("Lap Change")
+    lap = lap + 1
+    y = "Lap" + str(lap)
+    writeData(y)
+    writeData(fetchData)
 
 def fetchData():
 
@@ -25,8 +23,10 @@ def fetchData():
         "roll" : ahrs.roll(),
         "pitch" : ahrs.pitch(),
         "yaw" : ahrs.yaw(),
+        "yaw_vel" : ahrs.yaw_parameters()[0],
+        "yaw_accel" : ahrs.yaw_parameters()[1],
         "accelX" : ahrs.accelerometer()[0],
-        "accelY" : ahrs.accelerometer()[1],
+        "accelY" : ahrs.accelerometer()[1] - ahrs.yaw_parameters()[1]*ahrs.radius,
         "accelZ" : ahrs.accelerometer()[2]
     }
 
