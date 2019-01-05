@@ -1,3 +1,5 @@
+// Components: 4 Linear Potentials , 1 Gear Position Sensor   
+
 const int fLeft = 4 ;
 const int fRight = 5 ; 
 const int rLeft = 6 ;
