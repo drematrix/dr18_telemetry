@@ -1,4 +1,4 @@
-// Components: 4 Linear Potentials , 1 Gear Position Sensor , 1 Lap Timing Button 
+// Components: 4 Linear Potentials , 1 Gear Position Sensor , 1 Lap Timing Button.
 
 const int fLeft = 4 ;
 const int fRight = 5 ; 
@@ -6,9 +6,14 @@ const int rLeft = 6 ;
 const int rRight = 7 ;
 const int GPS = 3 ; 
 
+int buttonState = 0;         // current state of the button
+int lastButtonState = 0;     // previous state of the button
+
 void setup() {
   Serial.begin(9600) ; // Initialize Serial to log output
-  pinMode(A0,INPUT)  
+  pinMode(A0,INPUT) ;
+  pinMode(A1,INPUT) ; 
+
 }
 
 void loop() {
@@ -48,6 +53,14 @@ void loop() {
   
 // Following input is for Lap Timing Button 
 
-  Serial.println(digitalRead(A0)) ; 
+  buttonState = digitalRead(A0);
+
+  if (buttonState != lastButtonState) {
+    if (buttonState == HIGH) {
+      Serial.println("1") ;
+    }
+  }
+
+  lastButtonState = buttonState;
 
 }
