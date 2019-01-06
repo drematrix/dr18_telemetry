@@ -18,6 +18,13 @@ def writeData(arr=[],*args):
         output.writerows([arr])
     f.close()
 
+def writeLabel():
+    with open(fileName,'a+') as f:
+        output = csv.writer(f,dialect='excel')
+        labels = {'rideOne','rideTwo','rideThree','rideFour','rideFive','rideSix','rotary'}
+        output.writerows([labels])
+    f.close()
+
 #Lap change socket
 @sio.on('lap_change')
 def lap_change():
@@ -25,6 +32,7 @@ def lap_change():
     lap = lap + 1
     y = "Lap" + str(lap)
     writeData(y)
+    writeLabel()
     writeData(fetchData)
 
 
@@ -56,6 +64,7 @@ def fetchData():
  
 if __name__ == "__main__":
     sio.connect('http://localhost:3000')
+    writeLabel()
     while True:
         #global fetchData
         sio.emit('ride_rot', fetchData())
