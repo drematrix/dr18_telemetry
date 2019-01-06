@@ -14,6 +14,7 @@ cmd_pitch = "pitch di.\r\n"
 cmd_accelero = "accelp di.\r\n"
 cmd_gyro = "gyrop di.\r\n"
 cmd_temp = "temperature di.\r\n"
+radius = 0.85
 
 #Error Variables
 error_yaw=-0.0
@@ -32,6 +33,11 @@ def time1():
     t = float(t)
     return t
  
+ #initial varaibles
+time_initial=0
+yaw_initial=0
+yaw_velocity_initial=0
+
 #Returns the Yaw
 def yaw():
     flag = 0
@@ -153,6 +159,25 @@ def accelerometer():
                     flagz = 1
         a = [ax1, ay1, az1]
         return a
+
+#returns yaw_parameters
+def yaw_parameters():
+    global time_initial
+    global yaw_initial
+    global yaw_velocity_initial
+    yaw_final=yaw()
+    yaw_difference = yaw_final-yaw_initial
+    time_final=time.time()
+    time_difference = time_final-time_initial
+    yaw_velocity_final = yaw_difference/time_difference
+    yaw_velocity_difference = yaw_velocity_final-yaw_velocity_initial
+    yaw_acceleration = yaw_velocity_difference/time_difference
+    time_initial = time_final
+    yaw_initial = yaw_final
+    yaw_velocity_initial = yaw_velocity_final
+
+    yaw_parameters=[yaw_velocity_final,yaw_acceleration]
+    return yaw_parameters
 
 #Returns the temperature
 def temperature():
